@@ -12,4 +12,20 @@ describe(endpointUrl, () => {
     expect(response.body.title).toBe(newTodo.title);
     expect(response.body.done).toBe(newTodo.done);
   });
+
+  it(
+    ["should return error 500 on malformed data with POST", endpointUrl].join(
+      " "
+    ),
+    async () => {
+      const response = await request(app)
+        .post(endpointUrl)
+        .send({ title: "Missing Done Property" });
+      expect(response.status).toBe(500);
+      expect(response.body).toStrictEqual({
+        message:
+          "ValidationError: Todo validation failed: done: Path `done` is required.",
+      });
+    }
+  );
 });

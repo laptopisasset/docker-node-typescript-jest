@@ -14,7 +14,7 @@ let req: ReturnType<typeof createRequest>,
 beforeEach(() => {
   req = createRequest();
   res = createResponse();
-  next = () => {};
+  next = jest.fn();
 });
 
 describe("TodoController.createTodo", () => {
@@ -40,5 +40,13 @@ describe("TodoController.createTodo", () => {
     (TodoModel.create as jest.Mock).mockReturnValue(newTodo);
     await TodoController.createTodo(req, res, next);
     expect(res._getJSONData()).toStrictEqual(newTodo);
+  });
+
+  it("should handle error", async () => {
+    const errorMessage = { message: "Done property missing" };
+    const rejectedPromise = Promise.reject(errorMessage);
+    (TodoModel.create as jest.Mock).mockReturnValue(rejectedPromise);
+    await TodoController.createTodo(req, res, next);
+    expect(next).toBeCalledWith(errorMessage);
   });
 });
