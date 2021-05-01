@@ -23,8 +23,7 @@ describe(endpointUrl, () => {
         .send({ title: "Missing Done Property" });
       expect(response.status).toBe(500);
       expect(response.body).toStrictEqual({
-        message:
-          "ValidationError: Todo validation failed: done: Path `done` is required.",
+        message: "Todo validation failed: done: Path `done` is required.",
       });
     }
   );
