@@ -1,10 +1,10 @@
-import { Request, NextFunction, Response } from "express";
+import { NextFunction } from "express";
 import { createRequest, createResponse } from "node-mocks-http";
-import { arch } from "os";
 
 import TodoController from "../../src/controllers/todo.controller";
 import TodoModel from "../../src/models/todo.model";
 import newTodo from "../mocks/new-todo.json";
+import allTodos from "../mocks/all-todos.json";
 
 TodoModel.create = jest.fn();
 TodoModel.find = jest.fn();
@@ -25,6 +25,22 @@ describe("TodoController.getTodos", () => {
   it("should call TodoModel.find({})", async () => {
     await TodoController.getTodos(req, res, next);
     expect(TodoModel.find).toHaveBeenCalledWith({});
+  });
+
+  it("should return response with status 200 and all todos", async () => {
+    (TodoModel.find as jest.Mock).mockReturnValue(allTodos);
+    await TodoController.getTodos(req, res, next);
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled()).toBeTruthy();
+    expect(res._getJSONData()).toStrictEqual(allTodos);
+  });
+
+  it("should handle errors", async () => {
+    const errorMessage = { message: "Error finding" };
+    const rejectedPromise = Promise.reject(errorMessage);
+    (TodoModel.find as jest.Mock).mockReturnValue(rejectedPromise);
+    await TodoController.getTodos(req, res, next);
+    expect(next).toBeCalledWith(errorMessage);
   });
 });
 

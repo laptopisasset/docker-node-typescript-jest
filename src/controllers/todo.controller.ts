@@ -12,7 +12,12 @@ const createTodo: RequestHandler = async (req, res, next) => {
 };
 
 const getTodos: RequestHandler = async (req, res, next) => {
-  TodoModel.find({});
+  try {
+    const allTodos = await TodoModel.find({});
+    res.status(200).json(allTodos);
+  } catch (err) {
+    next(err);
+  }
 };
 
 export default {
