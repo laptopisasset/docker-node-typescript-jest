@@ -11,7 +11,9 @@ const createTodo: RequestHandler = async (req, res, next) => {
   }
 };
 
-const getTodos: RequestHandler = async (req, res, next) => {};
+const getTodos: RequestHandler = async (req, res, next) => {
+  TodoModel.find({});
+};
 
 export default {
   createTodo,
