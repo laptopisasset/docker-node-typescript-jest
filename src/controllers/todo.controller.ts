@@ -20,7 +20,9 @@ const getTodos: RequestHandler = async (req, res, next) => {
   }
 };
 
-const getTodoById: RequestHandler = async (req, res, next) => {};
+const getTodoById: RequestHandler = async (req, res, next) => {
+  TodoModel.findById(req.params.todoId);
+};
 
 export default {
   createTodo,
