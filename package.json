@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "ts-node-dev src/server.ts",
     "test": "jest",
-    "test:dev": "jest --watchAll --runInBand --detectOpenHandles"
+    "test:dev": "jest --watchAll --runInBand --detectOpenHandles --verbose"
   },
   "dependencies": {
     "express": "^4.17.1",
