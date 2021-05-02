@@ -10,6 +10,7 @@ TodoModel.create = jest.fn();
 TodoModel.find = jest.fn();
 TodoModel.findById = jest.fn();
 TodoModel.findByIdAndUpdate = jest.fn();
+TodoModel.findOneAndDelete = jest.fn();
 
 let req: ReturnType<typeof createRequest>,
   res: ReturnType<typeof createResponse>,
@@ -22,6 +23,12 @@ beforeEach(() => {
 });
 
 const todoId = "608e177bfc9dc8004eddbfe8";
+
+describe("TodoController.deleteTodo", () => {
+  it("should have deleteTodo function", () => {
+    expect(typeof TodoController.deleteTodo).toBe("function");
+  });
+});
 
 describe("TodoController.updateTodo", () => {
   it("should have a updateTodo function", () => {
