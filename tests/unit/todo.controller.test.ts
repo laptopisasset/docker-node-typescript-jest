@@ -41,6 +41,14 @@ describe("TodoController.getTodo", () => {
     expect(res._getJSONData()).toStrictEqual(newTodo);
     expect(res._isEndCalled()).toBeTruthy();
   });
+
+  it("should handle error", async () => {
+    const errorMessage = { message: "error finding todo" };
+    const rejectedPromis = Promise.reject(errorMessage);
+    (TodoModel.findById as jest.Mock).mockReturnValue(rejectedPromis);
+    await TodoController.getTodoById(req, res, next);
+    expect(next).toHaveBeenCalledWith(errorMessage);
+  });
 });
 
 describe("TodoController.getTodos", () => {
