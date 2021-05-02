@@ -5,6 +5,12 @@ import newTodo from "../mocks/new-todo.json";
 
 const endpointUrl = "/todos/";
 let firstTodo: { _id: string; title: string; done: boolean }, newTodoId: string;
+const nonExsistingTodoId = "608e4329b120bc004eced123";
+const testData = {
+  title: "Make Integration test for PUT",
+  done: true,
+};
+
 describe(endpointUrl, () => {
   it(["POST", endpointUrl].join(" "), async () => {
     const response = await request(app).post(endpointUrl).send(newTodo);
@@ -60,11 +66,6 @@ describe(endpointUrl, () => {
   );
 
   it(["PUT", [endpointUrl, ":todoId"].join("")].join(" "), async () => {
-    const testData = {
-      title: "Make Integration test for PUT",
-      done: true,
-    };
-
     const response = await request(app)
       .put([endpointUrl, newTodoId].join(""))
       .send(testData);
@@ -72,4 +73,31 @@ describe(endpointUrl, () => {
     expect(response.body.title).toBe(testData.title);
     expect(response.body.done).toBe(testData.done);
   });
+
+  it(
+    ["PUT should return 404", [endpointUrl, ":todoId"].join("")].join(" "),
+    async () => {
+      const response = await request(app)
+        .put([endpointUrl, nonExsistingTodoId].join(""))
+        .send(testData);
+      expect(response.status).toBe(404);
+    }
+  );
+
+  it(["DELETE", [endpointUrl, ":todoId"].join("")].join(" "), async () => {
+    const response = await request(app)
+      .delete([endpointUrl, newTodoId].join(""))
+      .send();
+    expect(response.status).toBe(200);
+  });
+
+  it(
+    ["DELETE should return 404", [endpointUrl, ":todoId"].join("")].join(" "),
+    async () => {
+      const response = await request(app)
+        .delete([endpointUrl, nonExsistingTodoId].join(""))
+        .send();
+      expect(response.status).toBe(404);
+    }
+  );
 });
