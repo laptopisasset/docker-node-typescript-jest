@@ -21,8 +21,16 @@ const getTodos: RequestHandler = async (req, res, next) => {
 };
 
 const getTodoById: RequestHandler = async (req, res, next) => {
-  const todo = await TodoModel.findById(req.params.todoId);
-  res.status(200).json(todo);
+  try {
+    const todo = await TodoModel.findById(req.params.todoId);
+    if (todo) {
+      res.status(200).json(todo);
+    } else {
+      res.status(404).send();
+    }
+  } catch (err) {
+    next(err);
+  }
 };
 
 export default {
