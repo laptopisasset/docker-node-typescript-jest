@@ -30,6 +30,29 @@ describe("TodoController.deleteTodo", () => {
     await TodoController.deleteTodo(req, res, next);
     expect(TodoModel.findByIdAndDelete).toHaveBeenCalledWith(todoId);
   });
+
+  it("should return 200 OK and delete todo", async () => {
+    (TodoModel.findByIdAndDelete as jest.Mock).mockReturnValue(newTodo);
+    await TodoController.deleteTodo(req, res, next);
+    expect(res.statusCode).toBe(200);
+    expect(res._getJSONData()).toStrictEqual(newTodo);
+    expect(res._isEndCalled()).toBeTruthy();
+  });
+
+  it("should handle errors", async () => {
+    const errorMessage = { message: "error deleting todo" };
+    const rejectedPromise = Promise.reject(errorMessage);
+    (TodoModel.findByIdAndDelete as jest.Mock).mockReturnValue(rejectedPromise);
+    await TodoController.deleteTodo(req, res, next);
+    expect(next).toHaveBeenCalledWith(errorMessage);
+  });
+
+  it("should return 404 when todo doesnt exist", async () => {
+    (TodoModel.findByIdAndDelete as jest.Mock).mockReturnValue(null);
+    await TodoController.deleteTodo(req, res, next);
+    expect(res.statusCode).toBe(404);
+    expect(res._isEndCalled()).toBeTruthy();
+  });
 });
 
 describe("TodoController.updateTodo", () => {
