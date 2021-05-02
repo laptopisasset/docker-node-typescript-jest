@@ -53,7 +53,9 @@ const updateTodo: RequestHandler = async (req, res, next) => {
   }
 };
 
-const deleteTodo: RequestHandler = (req, res, next) => {};
+const deleteTodo: RequestHandler = (req, res, next) => {
+  TodoModel.findByIdAndDelete(req.params.todoId);
+};
 
 export default {
   createTodo,

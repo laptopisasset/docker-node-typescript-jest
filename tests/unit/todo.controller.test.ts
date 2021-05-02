@@ -6,11 +6,7 @@ import TodoModel from "../../src/models/todo.model";
 import newTodo from "../mocks/new-todo.json";
 import allTodos from "../mocks/all-todos.json";
 
-TodoModel.create = jest.fn();
-TodoModel.find = jest.fn();
-TodoModel.findById = jest.fn();
-TodoModel.findByIdAndUpdate = jest.fn();
-TodoModel.findOneAndDelete = jest.fn();
+jest.mock("../../src/models/todo.model");
 
 let req: ReturnType<typeof createRequest>,
   res: ReturnType<typeof createResponse>,
@@ -27,6 +23,12 @@ const todoId = "608e177bfc9dc8004eddbfe8";
 describe("TodoController.deleteTodo", () => {
   it("should have deleteTodo function", () => {
     expect(typeof TodoController.deleteTodo).toBe("function");
+  });
+
+  it("should call TodoModel.findByIdAndDelete", async () => {
+    req.params.todoId = todoId;
+    await TodoController.deleteTodo(req, res, next);
+    expect(TodoModel.findByIdAndDelete).toHaveBeenCalledWith(todoId);
   });
 });
 
