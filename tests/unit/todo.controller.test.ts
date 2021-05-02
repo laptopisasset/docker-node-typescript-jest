@@ -21,14 +21,25 @@ beforeEach(() => {
 });
 
 describe("TodoController.getTodo", () => {
+  const id = "608e177bfc9dc8004eddbfe8";
+  beforeEach(() => {
+    req.params.todoId = id;
+  });
   it("should have createTodo function", () => {
     expect(typeof TodoController.getTodoById).toBe("function");
   });
 
   it("should call TodoModel.findById with route parameters", async () => {
-    req.params.todoId = "608e177bfc9dc8004eddbfe8";
     await TodoController.getTodoById(req, res, next);
-    expect(TodoModel.findById).toBeCalledWith("608e177bfc9dc8004eddbfe8");
+    expect(TodoModel.findById).toBeCalledWith(id);
+  });
+
+  it("should return a json body and response code 200", async () => {
+    (TodoModel.findById as jest.Mock).mockReturnValue(newTodo);
+    await TodoController.getTodoById(req, res, next);
+    expect(res.statusCode).toBe(200);
+    expect(res._getJSONData()).toStrictEqual(newTodo);
+    expect(res._isEndCalled()).toBeTruthy();
   });
 });
 
