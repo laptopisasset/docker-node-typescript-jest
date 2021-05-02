@@ -4,7 +4,7 @@ import app from "../../src/app";
 import newTodo from "../mocks/new-todo.json";
 
 const endpointUrl = "/todos/";
-let firstTodo: { _id: string; title: string; done: boolean };
+let firstTodo: { _id: string; title: string; done: boolean }, newTodoId: string;
 describe(endpointUrl, () => {
   it(["GET", endpointUrl].join(" "), async () => {
     const response = await request(app).get(endpointUrl);
@@ -42,6 +42,7 @@ describe(endpointUrl, () => {
     expect(response.status).toBe(201);
     expect(response.body.title).toBe(newTodo.title);
     expect(response.body.done).toBe(newTodo.done);
+    newTodoId = response.body._id;
   });
 
   it(
@@ -58,4 +59,17 @@ describe(endpointUrl, () => {
       });
     }
   );
+
+  const putUrl = [endpointUrl, newTodoId].join("");
+  it(["PUT", putUrl].join(" "), async () => {
+    const testData = {
+      title: "Make Integration test for PUT",
+      done: true,
+    };
+    console.log(putUrl);
+    const response = await request(app).put(putUrl).send(testData);
+    expect(response.status).toBe(200);
+    expect(response.body.title).toBe(testData.title);
+    expect(response.body.done).toBe(testData.done);
+  });
 });
